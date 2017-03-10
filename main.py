@@ -14,9 +14,10 @@ iCount = 0
 
 
 class GolCell(Button):
-    def __init__(self, master):
+    def __init__(self, master, x, y):
         Button.__init__(self, width=2, height=1, relief='groove', bg='white', command=self.pop)
         self.popped = False
+        self.x, self.y = x, y
         self.bind('<Button-3>', self.unpop)
 
     def pop(self):
@@ -41,7 +42,7 @@ class golGrid(Frame):
         self.cells = {}
         for x in range(xl):
             for y in range(yl):
-                self.cells[(x, y)] = GolCell(self)
+                self.cells[(x, y)] = GolCell(self, x, y)
                 self.cells[(x, y)].grid(row=x, column=y)
         iButton = Button(text='Iter', command=self.iterate, relief='groove',
                          width=4, height=1).grid(row=0, column=self.yl)
@@ -58,13 +59,16 @@ class golGrid(Frame):
         iCText = Label(text=str(iCount)).grid(row=self.xl - 1, column=self.yl)
         coordsToUPop = []
         coordsToPop = []
-        for x in range(self.xl - 1):
-            for y in range(self.yl - 1):
+        for x in range(self.xl):
+            for y in range(self.yl):
                 srrPop = 0
                 sCellsCoords = [(x, y - 1), (x, y + 1), (x + 1, y), (x - 1, y),
                                 (x + 1, y + 1), (x - 1, y + 1), (x + 1, y - 1), (x - 1, y - 1)]
                 for c in sCellsCoords:
-                    if c[0] > 0 and c[1] > 0:
+                    if c[0] < 0 or c[1] < 0 or c[0] > self.yl or c[0] > self.yl:
+                        sCellsCoords.remove(c)
+                for c in sCellsCoords:
+                    if c[0] > 0 and c[1] > 0 and c[1] <= self.yl - 1 and c[0] <= self.xl - 1:
                         if self.cells[c].popped:
                             if isinstance(self.cells[c], GolCell):
                                 srrPop += 1
