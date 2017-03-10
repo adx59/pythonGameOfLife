@@ -1,9 +1,7 @@
 # GOL(python)
-Game of Life by John Conway-implemented in Python. It's still very primitive at this point.
+Game of Life by John Conway-implemented in Python. Board size is customizable(if you're willing to edit one line of code).
 
 #Keyboard Controls
-
-Warning.. this feature may not be implemented... yet.
 
 i = Do Iteration
 
@@ -11,4 +9,4 @@ p = Play
 
 t = Set Iteration Interval
 
-The grid dimensions can only be edited manually in the code, but there should be documentation where that is.
+Sorry, but when you stop the play, you have to click the button instead of pressing the 's' button.
