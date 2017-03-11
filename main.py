@@ -8,7 +8,9 @@ __status__ = "Development"
 
 # import tkinter & time
 from tkinter import *
+from tkinter import messagebox
 import time
+import os
 
 # iteration count
 iCount = 0
@@ -132,7 +134,7 @@ class golGrid(Frame):
 
     def play(self):
         """g.play -> None
-            continously do iterations of the grid, with an interval of
+            continuously do iterations of the grid, with an interval of
             time between each iteration"""
         # start loop
         self.st = False
@@ -172,9 +174,38 @@ class golGrid(Frame):
             for y in range(self.yl):
                 self.cells[(x, y)].unpop(1)
         iCount = 0
-        
+
+    def importfile(self, filename):
+        """g.importfile -> None
+            imports a .golp file as the grid"""
+        g.clearGrid()
+        file = open(filename, 'r')
+        asciiGridList = file.readlines()
+        if len(asciiGridList[1]) - 1 != self.yl:
+            messagebox.showerror(title="Aw, Man!", message = "Darnet! Exported grid not the same size as current grid")
+            return 0
+        for y in range(len(asciiGridList)):
+            for x in range(len(asciiGridList[y]) - 1):
+                if asciiGridList[y][x] == '+':
+                    self.cells[(y, x)].pop()
+                elif asciiGridList[y][x] == '`':
+                    pass
+
+
     def export(self, filename):
+        """g.export() -> None
+            exports the grid as a .golp file
+            the file can be imported in order to set
+            the grid accordingly"""
         file = open(filename, 'w')
+        for x in range(self.xl):
+            for y in range(self.yl):
+                if self.cells[(x, y)].popped:
+                    file.write('+')
+                else:
+                    file.write('`')
+                if y == self.yl - 1:
+                    file.write('\n')
         
 
     def pressed(self, event):
@@ -190,13 +221,20 @@ class golGrid(Frame):
         # t button sets the interval
         elif event.char == 't':
             g.setItvl()
+        elif event.char == 'e':
+            g.export('grid.golp')
+        elif event.char == 'r':
+            if not os.path.isdir('grid.golp'):
+                messagebox.showerror(title='Aw, Man!', message='grid.golp doesn\'t exist, well at least not in the current working dir.')
+                return 0
+            g.importfile('grid.golp')
 
 
 root = Tk()
 root.title('Game Of Life')
 # setup grid
 # adjust grid size here
-g = golGrid(root, 20, 20, 200)
+g = golGrid(root, 20, 30, 200)
 g.grid()
 #bind, and mainloop
 root.bind("<Key>", g.pressed)
