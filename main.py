@@ -75,6 +75,10 @@ class golGrid(Frame):
         # button to play simulation
         playButton = Button(text="Play", relief='groove', command=self.play,
                             width=4, height=1).grid(row=2, column=self.yl)
+        # button to clear screen
+        clearScrButton = Button(text = "Clr", relief='groove', command=self.clearGrid,
+                                width=4, height=1).grid(row=4, column = self.yl)
+        
 
     def iterate(self):
         """g.iterate() -> None
@@ -158,6 +162,20 @@ class golGrid(Frame):
         Label(iWindow, text="Set interval(ms)").grid(row=0, column=0)
         Entry(iWindow, textvariable=interval, width=10).grid(row=1, column=0)
         Button(iWindow, text="Set", command=set, width=5, relief='groove').grid(row=1, column=1)
+    
+    def clearGrid(self):
+        """g.clearGrid(self) -> None
+            clears the grid of populated
+            cells"""
+        global iCount
+        for x in range(self.xl):
+            for y in range(self.yl):
+                self.cells[(x, y)].unpop(1)
+        iCount = 0
+        
+    def export(self, filename):
+        file = open(filename, 'w')
+        
 
     def pressed(self, event):
         """g.pressed -> None
