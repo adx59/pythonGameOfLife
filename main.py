@@ -14,6 +14,27 @@ import os
 
 # iteration count
 iCount = 0
+# config data list
+data = [None] * 7
+
+
+def loadConfig():
+    """loadConfig -> None
+        loads data from configuration file(CONFIG.txt)"""
+    global data
+    cfile = open('CONFIG.txt', 'r')
+    data[0] = cfile.readline().strip()
+    data[1] = cfile.readline().strip()
+    data[2] = int(cfile.readline())
+    data[3] = int(cfile.readline())
+    dlpData = cfile.readlines()
+    data[4] = eval(dlpData[0].strip())
+    data[5] = eval(dlpData[1].strip())
+    data[6] = eval(dlpData[2].strip())
+    print(data)
+
+
+loadConfig()
 
 
 class GolCell(Button):
@@ -21,7 +42,8 @@ class GolCell(Button):
         """GolCell(master, x, y) -> None
             creates new Game of Life Cell"""
         # initialize button
-        Button.__init__(self, width=2, height=1, relief='groove', bg='white', command=self.pop)
+        global data
+        Button.__init__(self, width=2, height=1, relief='groove', bg=data[1], command=self.pop)
         self.popped = False
         self.x, self.y = x, y
         # bind to unpop function, right click to unpopulate
@@ -30,16 +52,18 @@ class GolCell(Button):
     def pop(self):
         """G.pop() -> None
             populates Game of Life Cell"""
+        global data
         self.popped = True
         # cosmetic
-        self['bg'] = "blue"
+        self['bg'] = data[0]
 
     def unpop(self, bind):
+        global data
         """G.unpop() -> None
             unpopulates Game of Life Cell"""
         self.popped = False
         # cosmetic
-        self['bg'] = "white"
+        self['bg'] = data[1]
 
 
 class golGrid(Frame):
@@ -78,9 +102,12 @@ class golGrid(Frame):
         playButton = Button(text="Play", relief='groove', command=self.play,
                             width=4, height=1).grid(row=2, column=self.yl)
         # button to clear screen
-        clearScrButton = Button(text = "Clr", relief='groove', command=self.clearGrid,
-                                width=4, height=1).grid(row=4, column = self.yl)
-        
+        clearScrButton = Button(text="Clr", relief='groove', command=self.clearGrid,
+                                width=4, height=1).grid(row=4, column=self.yl)
+        impButton = Button(text="Imp.", relief='groove', command=self.importGui,
+                           width=4, height=1).grid(row=5, column=self.yl)
+        expButton = Button(text="Exp.", relief='groove', command=self.exportGui,
+                           width=4, height=1).grid(row=6, column=self.yl)
 
     def iterate(self):
         """g.iterate() -> None
@@ -88,6 +115,7 @@ class golGrid(Frame):
             cells that are to be unpopulated are unpopulated,
             and vice versa"""
         # iteration count, add to iteration count
+        global data
         global iCount
         iCount += 1
         # show iteration count in se corner
@@ -113,14 +141,12 @@ class golGrid(Frame):
                         if self.cells[c].popped:
                             srrPop += 1
                 # determine what happens to the cell
-                if srrPop < 2:
+                if srrPop in data[4]:
                     coordsToUPop.append((x, y))
-                elif srrPop == 2:
+                elif srrPop in data[5]:
                     pass
-                elif srrPop == 3:
+                elif srrPop in data[6]:
                     coordsToPop.append((x, y))
-                elif srrPop > 3:
-                    coordsToUPop.append((x, y))
         # finally, unpopulate & populate cells
         for coords in coordsToUPop:
             self.cells[coords].unpop(2)
@@ -164,7 +190,7 @@ class golGrid(Frame):
         Label(iWindow, text="Set interval(ms)").grid(row=0, column=0)
         Entry(iWindow, textvariable=interval, width=10).grid(row=1, column=0)
         Button(iWindow, text="Set", command=set, width=5, relief='groove').grid(row=1, column=1)
-    
+
     def clearGrid(self):
         """g.clearGrid(self) -> None
             clears the grid of populated
@@ -182,15 +208,14 @@ class golGrid(Frame):
         file = open(filename, 'r')
         asciiGridList = file.readlines()
         if len(asciiGridList[1]) - 1 != self.yl:
-            messagebox.showerror(title="Aw, Man!", message = "Darnet! Exported grid not the same size as current grid")
+            messagebox.showerror(title="Aw, Man!", message="Darnet! Exported grid not the same size as current grid")
             return 0
         for y in range(len(asciiGridList)):
             for x in range(len(asciiGridList[y]) - 1):
-                if asciiGridList[y][x] == '+':
+                if asciiGridList[y][x] == 'X':
                     self.cells[(y, x)].pop()
                 elif asciiGridList[y][x] == '`':
                     pass
-
 
     def export(self, filename):
         """g.export() -> None
@@ -201,12 +226,50 @@ class golGrid(Frame):
         for x in range(self.xl):
             for y in range(self.yl):
                 if self.cells[(x, y)].popped:
-                    file.write('+')
+                    file.write('X')
                 else:
                     file.write('`')
                 if y == self.yl - 1:
                     file.write('\n')
-        
+
+    def exportGui(self):
+        """g.exportGui -> None
+            opens a GUI for exporting grid"""
+        eWindow = Toplevel(self.m)
+        filename = StringVar()
+
+        def exp():
+            fn = filename.get()
+            if '.' in fn:
+                self.export(fn)
+            else:
+                self.export(fn + '.golp')
+
+        Label(eWindow, text="    Filename    ").grid(row=0, column=0)
+        Entry(eWindow, textvariable=filename, width=10).grid(row=1, column=0)
+        Button(eWindow, text="Export", relief='groove', command=exp, width=7).grid(row=1, column=1)
+
+    def importGui(self):
+        """g.import"""
+        imWindow = Toplevel(self.m)
+        filename = StringVar()
+
+        def imp():
+            fn = filename.get()
+            if '.' in fn:
+                if not os.path.isfile(fn):
+                    messagebox.showerror("Oh shoot", "That file isn't in this folder!")
+                    return 0
+                self.importfile(fn)
+            else:
+                if not os.path.isfile(fn + '.golp'):
+                    messagebox.showerror("Oh shoot", "That file isn't in this folder!")
+                    return 0
+                self.importfile(fn + '.golp')
+
+        Label(imWindow, text="    Filename    ").grid(row=0, column=0)
+        Entry(imWindow, textvariable=filename, width=10).grid(row=1, column=0)
+        Button(imWindow, text="Import", relief='groove', command=imp, width=7).grid(row=1, column=1)
 
     def pressed(self, event):
         """g.pressed -> None
@@ -218,24 +281,23 @@ class golGrid(Frame):
         # p button starts playing
         elif event.char == 'p':
             g.play()
+        elif event.char == 's':
+            g.stop()
         # t button sets the interval
         elif event.char == 't':
             g.setItvl()
         elif event.char == 'e':
-            g.export('grid.golp')
+            g.exportGui()
         elif event.char == 'r':
-            if not os.path.isdir('grid.golp'):
-                messagebox.showerror(title='Aw, Man!', message='grid.golp doesn\'t exist, well at least not in the current working dir.')
-                return 0
-            g.importfile('grid.golp')
+            g.importGui()
 
 
 root = Tk()
 root.title('Game Of Life')
 # setup grid
 # adjust grid size here
-g = golGrid(root, 20, 30, 200)
+g = golGrid(root, data[2], data[3], 200)
 g.grid()
-#bind, and mainloop
+# bind, and mainloop
 root.bind("<Key>", g.pressed)
 root.mainloop()

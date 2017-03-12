@@ -1,5 +1,5 @@
 # GOL(python)
-Game of Life by John Conway-implemented in Python. Board size is customizable(if you're willing to edit one line of code).
+Game of Life by John Conway-implemented in Python.
 
 #Keyboard Controls
 
@@ -7,25 +7,33 @@ i = Do Iteration
 
 p = Play
 
+s = Stop
+
 t = Set Iteration Interval
 
-e = Export grid as grid.golp
+e = Export grid
 
-r = Import grid.golp as grid
-
-Sorry, but when you stop the play, you have to click the button instead of pressing the 's' button.
+r = Import grid
 
 #Import/Export Capability
 
-Alright, so I got bored, so I added a feature where you can export the grid into a text file. But of
-course, I'm using a different format when exporting - .golp. I don't know why. J-just roll w/ it. The code
-can still read through text files though.
+Alright, so I got bored, so I added a feature where you can export the grid into a text file. You can also
+import the exported files to get your grid that you exported back. But of course, I'm using a different format 
+when exporting - .golp. I don't know why. J-just roll w/ it. The code can still read through text files though.
 
-By the way, as of 10:36 PST on Mar. 10, 2017, this feature doesn't come with a nice GUI. So I guess you have to 
-use keyboard controls to import/export.
+#CONFIG.txt
 
-It's not that bad.
+Ok, so you can actually edit attributes of the board through CONFIG.txt. The first line is the color of populated
+cells. The second line is the color of unpopulated cells. The third and fourth line are the width and length of 
+the board, and finally the 5th, 6th, and 7th customize the rules of the game. The fifth line is a list of the 
+amount of neighboring populated cells that would make a cell unpopulated. The 6th line is a list of the amount of 
+neighboring populated cells that would let the cell stay living, and the 7th a list of the amount that would populate
+a cell.
 
-It's just the r and e key.
+#Oh, boy! This code is written horribly!
+
+Well, obviously. I'm not a software engineer. I'm just an 11 year old kid sitting in his basement making programs
+for his own self amusement.
+
 
 
