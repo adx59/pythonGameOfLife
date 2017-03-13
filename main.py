@@ -31,7 +31,6 @@ def loadConfig():
     data[4] = eval(dlpData[0].strip())
     data[5] = eval(dlpData[1].strip())
     data[6] = eval(dlpData[2].strip())
-    print(data)
 
 
 loadConfig()
@@ -281,19 +280,22 @@ class golGrid(Frame):
         # p button starts playing
         elif event.char == 'p':
             g.play()
+        # s button stops playing
         elif event.char == 's':
             g.stop()
         # t button sets the interval
         elif event.char == 't':
             g.setItvl()
+        # e button opens export menu
         elif event.char == 'e':
             g.exportGui()
+        # r button opens import menu
         elif event.char == 'r':
             g.importGui()
 
 
 root = Tk()
-root.title('Game Of Life')
+root.title('GOL')
 # setup grid
 # adjust grid size here
 g = golGrid(root, data[2], data[3], 200)
