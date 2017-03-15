@@ -1,7 +1,7 @@
 # GOL(python)
 Game of Life by John Conway-implemented in Python.
 
-#Keyboard Controls
+# Keyboard Controls
 
 i = Do Iteration
 
@@ -15,13 +15,13 @@ e = Export grid
 
 r = Import grid
 
-#Import/Export Capability
+# Import/Export Capability
 
 Alright, so I got bored, so I added a feature where you can export the grid into a text file. You can also
 import the exported files to get your grid that you exported back. But of course, I'm using a different format 
 when exporting - .golp. I don't know why. J-just roll w/ it. The code can still read through text files though.
 
-#CONFIG.txt
+# CONFIG.txt
 
 Ok, so you can actually edit attributes of the board through CONFIG.txt. The first line is the color of populated
 cells. The second line is the color of unpopulated cells. The third and fourth line are the width and length of 
@@ -30,7 +30,7 @@ amount of neighboring populated cells that would make a cell unpopulated. The 6t
 neighboring populated cells that would let the cell stay living, and the 7th a list of the amount that would populate
 a cell.
 
-#Oh, boy! This code is written horribly!
+# Oh, boy! This code is written horribly!
 
 Well, obviously. I'm not a software engineer. I'm just an 11 year old kid sitting in his basement making programs
 for his own self amusement.
