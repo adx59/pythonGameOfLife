@@ -30,10 +30,5 @@ amount of neighboring populated cells that would make a cell unpopulated. The 6t
 neighboring populated cells that would let the cell stay living, and the 7th a list of the amount that would populate
 a cell.
 
-# Oh, boy! This code is written horribly!
-
-Well, obviously. I'm not a software engineer. I'm just an 11 year old kid sitting in his basement making programs
-for his own self amusement.
-
 
 
